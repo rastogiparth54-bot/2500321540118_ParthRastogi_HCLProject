@@ -1,0 +1,189 @@
+// =============================================================================
+// Project 1: Sales Performance Dashboard (Retail & E-Commerce)
+// File: dax_measures.txt
+// Complete DAX Measure Library for Power BI Enterprise Dashboard
+// =============================================================================
+
+// =============================================================================
+// 1. BASE MEASURES (CORE REVENUE & VOLUME)
+// =============================================================================
+
+Total Orders = 
+DISTINCTCOUNT(Fact_Sales[Transaction_ID])
+
+Total Units Sold = 
+SUM(Fact_Sales[Quantity])
+
+Total Gross Sales = 
+SUM(Fact_Sales[Gross_Sales])
+
+Total Discount Amount = 
+SUM(Fact_Sales[Discount_Amount])
+
+Total Net Sales = 
+SUM(Fact_Sales[Net_Sales])
+
+Total Cost of Goods Sold = 
+SUM(Fact_Sales[Total_Cost])
+
+Total Gross Profit = 
+SUM(Fact_Sales[Gross_Profit])
+
+Average Order Value (AOV) = 
+DIVIDE([Total Net Sales], [Total Orders], 0)
+
+Gross Profit Margin % = 
+DIVIDE([Total Gross Profit], [Total Net Sales], 0)
+
+Effective Discount Rate % = 
+DIVIDE([Total Discount Amount], [Total Gross Sales], 0)
+
+Average Units per Order = 
+DIVIDE([Total Units Sold], [Total Orders], 0)
+
+// =============================================================================
+// 2. TIME INTELLIGENCE MEASURES (YTD, QTD, MoM, YoY)
+// =============================================================================
+
+// Year-to-Date (YTD) Sales
+Sales YTD = 
+TOTALYTD([Total Net Sales], Dim_Date[Full_Date])
+
+// Quarter-to-Date (QTD) Sales
+Sales QTD = 
+TOTALQTD([Total Net Sales], Dim_Date[Full_Date])
+
+// Month-to-Date (MTD) Sales
+Sales MTD = 
+TOTALMTD([Total Net Sales], Dim_Date[Full_Date])
+
+// Prior Month Net Sales
+Sales Prior Month = 
+CALCULATE(
+    [Total Net Sales],
+    DATEADD(Dim_Date[Full_Date], -1, MONTH)
+)
+
+// Month-over-Month (MoM) Sales Variance
+Sales MoM Variance = 
+[Total Net Sales] - [Sales Prior Month]
+
+// Month-over-Month (MoM) Growth Percentage
+Sales MoM Growth % = 
+DIVIDE([Sales MoM Variance], [Sales Prior Month], 0)
+
+// Prior Year Net Sales (Same Period Last Year)
+Sales Prior Year (SPLY) = 
+CALCULATE(
+    [Total Net Sales],
+    SAMEPERIODLASTYEAR(Dim_Date[Full_Date])
+)
+
+// Year-over-Year (YoY) Sales Variance
+Sales YoY Variance = 
+[Total Net Sales] - [Sales Prior Year (SPLY)]
+
+// Year-over-Year (YoY) Growth Percentage
+Sales YoY Growth % = 
+DIVIDE([Sales YoY Variance], [Sales Prior Year (SPLY)], 0)
+
+// 3-Month Rolling Average Sales
+Sales 3M Rolling Avg = 
+AVERAGEX(
+    DATESINPERIOD(Dim_Date[Full_Date], LASTDATE(Dim_Date[Full_Date]), -3, MONTH),
+    [Total Net Sales]
+)
+
+// =============================================================================
+// 3. TARGET VARIANCE & KPI CARD FORMATTING
+// =============================================================================
+
+// Dynamic Monthly Sales Target (Assuming 8% Growth over Prior Year or Budget Target)
+Monthly Sales Target = 
+IF(
+    ISBLANK([Sales Prior Year (SPLY)]),
+    [Total Net Sales] * 1.05,
+    [Sales Prior Year (SPLY)] * 1.08
+)
+
+// Variance to Target in USD
+Variance to Target = 
+[Total Net Sales] - [Monthly Sales Target]
+
+// Variance to Target %
+Variance to Target % = 
+DIVIDE([Variance to Target], [Monthly Sales Target], 0)
+
+// Dynamic KPI Status Indicator for KPI Card Visuals
+KPI Status Indicator = 
+SWITCH(
+    TRUE(),
+    [Variance to Target %] >= 0, "▲ On Track (+" & FORMAT([Variance to Target %], "0.0%") & ")",
+    [Variance to Target %] >= -0.05, "■ Warning (" & FORMAT([Variance to Target %], "0.0%") & ")",
+    "▼ Below Target (" & FORMAT([Variance to Target %], "0.0%") & ")"
+)
+
+// Dynamic KPI Card Subtitle
+KPI Card Subtitle = 
+"Target: " & FORMAT([Monthly Sales Target], "$#,##0") & " | Var: " & FORMAT([Variance to Target %], "+0.0%;-0.0%;0.0%")
+
+// KPI Card Hex Color Code (Conditional Formatting)
+KPI Card Color = 
+IF([Variance to Target] >= 0, "#107C41", "#D83B01") // Green or Red
+
+// =============================================================================
+// 4. RANKING & TOP-N DYNAMIC MEASURES
+// =============================================================================
+
+// Product Revenue Rank
+Product Rank by Revenue = 
+RANKX(
+    ALL(Dim_Product[Product_Name]),
+    [Total Net Sales],
+    ,
+    DESC,
+    Dense
+)
+
+// Dynamic Top 10 Product Filter Flag (Returns 1 if in Top 10, else 0)
+Is Top 10 Product = 
+IF([Product Rank by Revenue] <= 10, 1, 0)
+
+// % Share of Total Sales (Responsive to Category or Regional Slicers)
+Share of Total Sales % = 
+DIVIDE(
+    [Total Net Sales],
+    CALCULATE([Total Net Sales], ALLSELECTED()),
+    0
+)
+
+// % Share of Region Sales
+Share of Region Sales % = 
+DIVIDE(
+    [Total Net Sales],
+    CALCULATE([Total Net Sales], ALLSELECTED(Dim_Region[City]), ALLSELECTED(Dim_Region[Store_ID])),
+    0
+)
+
+// =============================================================================
+// 5. SLICER CONTEXT & SELECTED VALUE LABELS
+// =============================================================================
+
+Selected Region Label = 
+IF(
+    ISFILTERED(Dim_Region[Region]),
+    "Selected Region: " & CONCATENATEX(VALUES(Dim_Region[Region]), Dim_Region[Region], ", "),
+    "All Geographic Regions"
+)
+
+Selected Category Label = 
+IF(
+    ISFILTERED(Dim_Product[Product_Category]),
+    "Selected Category: " & CONCATENATEX(VALUES(Dim_Product[Product_Category]), Dim_Product[Product_Category], ", "),
+    "All Product Categories"
+)
+
+Selected Time Horizon Label = 
+"Reporting Period: " & 
+FORMAT(MIN(Dim_Date[Full_Date]), "mmm yyyy") & " to " & 
+FORMAT(MAX(Dim_Date[Full_Date]), "mmm yyyy")

@@ -1,0 +1,11 @@
+Region_Key,Store_ID,City,State,Region
+1,STR-101,New York,NY,East
+2,STR-102,Boston,MA,East
+3,STR-103,Chicago,IL,Central
+4,STR-104,Dallas,TX,Central
+5,STR-105,Atlanta,GA,South
+6,STR-106,Miami,FL,South
+7,STR-107,Los Angeles,CA,West
+8,STR-108,San Francisco,CA,West
+9,STR-109,Seattle,WA,West
+10,STR-110,Denver,CO,West

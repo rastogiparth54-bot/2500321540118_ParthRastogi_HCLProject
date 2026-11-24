@@ -1,0 +1,30 @@
+{
+    "raw_record_count": 5055,
+    "exact_duplicates": 40,
+    "duplicate_txn_ids": 55,
+    "null_counts": {
+        "Transaction_ID": 0,
+        "Date": 0,
+        "Customer_ID": 20,
+        "Gender": 15,
+        "Age": 0,
+        "Product_Category": 15,
+        "Product_ID": 0,
+        "Product_Name": 0,
+        "Quantity": 0,
+        "Price_Per_Unit": 0,
+        "Discount_Pct": 0,
+        "Total_Amount": 15,
+        "Payment_Method": 0,
+        "Store_ID": 0,
+        "City": 0,
+        "State": 0,
+        "Region": 0
+    },
+    "negative_quantities": 25,
+    "negative_amounts": 50,
+    "duplicates_removed_total": 55,
+    "invalid_dates_dropped": 23,
+    "anomalous_financial_records": 50,
+    "final_clean_record_count": 4927
+}

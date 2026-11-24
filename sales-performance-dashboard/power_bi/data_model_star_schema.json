@@ -1,0 +1,129 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/powerbi/desktop/modeling/schema.json",
+  "modelName": "Sales_Performance_Dashboard_Model",
+  "version": "2.0.0",
+  "architecture": "Kimball Conformed Star Schema",
+  "tables": [
+    {
+      "name": "Fact_Sales",
+      "type": "Fact",
+      "description": "Transactional sales fact table containing granular order line performance and financials.",
+      "columns": [
+        {"name": "Sales_Key", "dataType": "Int64", "isKey": true},
+        {"name": "Transaction_ID", "dataType": "String"},
+        {"name": "Date_Key", "dataType": "Int64", "isForeignKey": true},
+        {"name": "Product_Key", "dataType": "Int64", "isForeignKey": true},
+        {"name": "Customer_Key", "dataType": "Int64", "isForeignKey": true},
+        {"name": "Region_Key", "dataType": "Int64", "isForeignKey": true},
+        {"name": "Quantity", "dataType": "Int64"},
+        {"name": "Price_Per_Unit", "dataType": "Decimal"},
+        {"name": "Discount_Pct", "dataType": "Decimal"},
+        {"name": "Gross_Sales", "dataType": "Decimal"},
+        {"name": "Discount_Amount", "dataType": "Decimal"},
+        {"name": "Net_Sales", "dataType": "Decimal"},
+        {"name": "Total_Cost", "dataType": "Decimal"},
+        {"name": "Gross_Profit", "dataType": "Decimal"},
+        {"name": "Profit_Margin_Pct", "dataType": "Decimal"},
+        {"name": "Payment_Method", "dataType": "String"}
+      ]
+    },
+    {
+      "name": "Dim_Date",
+      "type": "Dimension",
+      "description": "Conformed Date dimension supporting time-intelligence and temporal rollups.",
+      "columns": [
+        {"name": "Date_Key", "dataType": "Int64", "isKey": true},
+        {"name": "Full_Date", "dataType": "DateTime"},
+        {"name": "Year", "dataType": "Int64"},
+        {"name": "Quarter", "dataType": "String"},
+        {"name": "Year_Quarter", "dataType": "String"},
+        {"name": "Month_Num", "dataType": "Int64"},
+        {"name": "Month_Name", "dataType": "String"},
+        {"name": "Month_Year", "dataType": "String"},
+        {"name": "Day_Of_Month", "dataType": "Int64"},
+        {"name": "Day_Of_Week", "dataType": "Int64"},
+        {"name": "Day_Name", "dataType": "String"},
+        {"name": "Is_Weekend", "dataType": "Int64"}
+      ]
+    },
+    {
+      "name": "Dim_Product",
+      "type": "Dimension",
+      "description": "Product catalog dimension with category hierarchy and baseline unit costs.",
+      "columns": [
+        {"name": "Product_Key", "dataType": "Int64", "isKey": true},
+        {"name": "Product_ID", "dataType": "String"},
+        {"name": "Product_Name", "dataType": "String"},
+        {"name": "Product_Category", "dataType": "String"},
+        {"name": "Price_Per_Unit", "dataType": "Decimal"},
+        {"name": "Unit_Cost", "dataType": "Decimal"}
+      ]
+    },
+    {
+      "name": "Dim_Customer",
+      "type": "Dimension",
+      "description": "Customer demographic dimension holding age cohorts and gender classifications.",
+      "columns": [
+        {"name": "Customer_Key", "dataType": "Int64", "isKey": true},
+        {"name": "Customer_ID", "dataType": "String"},
+        {"name": "Gender", "dataType": "String"},
+        {"name": "Age", "dataType": "Int64"},
+        {"name": "Age_Group", "dataType": "String"}
+      ]
+    },
+    {
+      "name": "Dim_Region",
+      "type": "Dimension",
+      "description": "Territory dimension supporting hierarchical drill-downs (Region -> State -> City -> Store).",
+      "columns": [
+        {"name": "Region_Key", "dataType": "Int64", "isKey": true},
+        {"name": "Store_ID", "dataType": "String"},
+        {"name": "City", "dataType": "String"},
+        {"name": "State", "dataType": "String"},
+        {"name": "Region", "dataType": "String"}
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "name": "FactSales_DimDate",
+      "fromTable": "Fact_Sales",
+      "fromColumn": "Date_Key",
+      "toTable": "Dim_Date",
+      "toColumn": "Date_Key",
+      "cardinality": "ManyToOne",
+      "crossFilteringBehavior": "OneDirection",
+      "isActive": true
+    },
+    {
+      "name": "FactSales_DimProduct",
+      "fromTable": "Fact_Sales",
+      "fromColumn": "Product_Key",
+      "toTable": "Dim_Product",
+      "toColumn": "Product_Key",
+      "cardinality": "ManyToOne",
+      "crossFilteringBehavior": "OneDirection",
+      "isActive": true
+    },
+    {
+      "name": "FactSales_DimCustomer",
+      "fromTable": "Fact_Sales",
+      "fromColumn": "Customer_Key",
+      "toTable": "Dim_Customer",
+      "toColumn": "Customer_Key",
+      "cardinality": "ManyToOne",
+      "crossFilteringBehavior": "OneDirection",
+      "isActive": true
+    },
+    {
+      "name": "FactSales_DimRegion",
+      "fromTable": "Fact_Sales",
+      "fromColumn": "Region_Key",
+      "toTable": "Dim_Region",
+      "toColumn": "Region_Key",
+      "cardinality": "ManyToOne",
+      "crossFilteringBehavior": "OneDirection",
+      "isActive": true
+    }
+  ]
+}

@@ -1,0 +1,200 @@
+-- =============================================================================
+-- Project 1: Sales Performance Dashboard (Retail & E-Commerce)
+-- Script 02: Oracle Data Load & Ingestion Pipeline
+-- Supports: Oracle External Tables, Direct Staging Inserts & Verification
+-- =============================================================================
+
+-- Step 1: Create Database Directory Object (Requires DBA / CREATE ANY DIRECTORY privilege)
+-- CREATE OR REPLACE DIRECTORY RETAIL_DATA_DIR AS '/u01/app/oracle/oradata/retail_data/';
+-- GRANT READ, WRITE ON DIRECTORY RETAIL_DATA_DIR TO PUBLIC;
+
+-- -----------------------------------------------------------------------------
+-- 2. STAGING TABLE DEFINITION: STG_RETAIL_CLEANED
+-- -----------------------------------------------------------------------------
+CREATE TABLE STG_RETAIL_SALES (
+    TRANSACTION_ID   VARCHAR2(50),
+    DATE_STR         VARCHAR2(20),
+    CUSTOMER_ID      VARCHAR2(50),
+    GENDER           VARCHAR2(20),
+    AGE              NUMBER(3),
+    PRODUCT_CATEGORY VARCHAR2(100),
+    PRODUCT_ID       VARCHAR2(50),
+    PRODUCT_NAME     VARCHAR2(150),
+    QUANTITY         NUMBER(6),
+    PRICE_PER_UNIT   NUMBER(10, 2),
+    DISCOUNT_PCT     NUMBER(4, 2),
+    TOTAL_AMOUNT     NUMBER(12, 2),
+    PAYMENT_METHOD   VARCHAR2(50),
+    STORE_ID         VARCHAR2(50),
+    CITY             VARCHAR2(50),
+    STATE            VARCHAR2(20),
+    Region           VARCHAR2(50),
+    GROSS_SALES      NUMBER(12, 2),
+    DISCOUNT_AMOUNT  NUMBER(12, 2),
+    NET_SALES        NUMBER(12, 2),
+    UNIT_COST        NUMBER(10, 2),
+    TOTAL_COST       NUMBER(12, 2),
+    GROSS_PROFIT     NUMBER(12, 2),
+    PROFIT_MARGIN_PCT NUMBER(6, 2),
+    DATE_VAL         DATE,
+    DATE_KEY         NUMBER(8)
+);
+
+-- -----------------------------------------------------------------------------
+-- 3. SQL*LOADER (SQLLDR) CONTROL FILE TEMPLATE: load_fact_sales.ctl
+-- -----------------------------------------------------------------------------
+/*
+OPTIONS (SKIP=1, DIRECT=TRUE, ERRORS=50)
+LOAD DATA
+INFILE 'fact_sales.csv'
+BADFILE 'fact_sales.bad'
+DISCARDFILE 'fact_sales.dsc'
+INTO TABLE FACT_SALES
+FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"'
+TRAILING NULLCOLS
+(
+  SALES_KEY,
+  TRANSACTION_ID,
+  DATE_KEY,
+  PRODUCT_KEY,
+  CUSTOMER_KEY,
+  REGION_KEY,
+  QUANTITY,
+  PRICE_PER_UNIT,
+  DISCOUNT_PCT,
+  GROSS_SALES,
+  DISCOUNT_AMOUNT,
+  NET_SALES,
+  TOTAL_COST,
+  GROSS_PROFIT,
+  PROFIT_MARGIN_PCT,
+  PAYMENT_METHOD
+)
+*/
+
+-- -----------------------------------------------------------------------------
+-- 4. DIRECT DATA POPULATION SCRIPTS (FROM STAGING TO STAR SCHEMA)
+-- -----------------------------------------------------------------------------
+
+-- A. Populate DIM_DATE from Staging Dates
+INSERT INTO DIM_DATE (
+    DATE_KEY, FULL_DATE, YEAR, QUARTER, YEAR_QUARTER,
+    MONTH_NUM, MONTH_NAME, MONTH_YEAR, DAY_OF_MONTH,
+    DAY_OF_WEEK, DAY_NAME, IS_WEEKEND
+)
+WITH UniqueDates AS (
+    SELECT DISTINCT 
+        TO_NUMBER(TO_CHAR(DATE_VAL, 'YYYYMMDD')) AS DATE_KEY,
+        TRUNC(DATE_VAL) AS FULL_DATE
+    FROM STG_RETAIL_SALES
+    WHERE DATE_VAL IS NOT NULL
+)
+SELECT 
+    d.DATE_KEY,
+    d.FULL_DATE,
+    EXTRACT(YEAR FROM d.FULL_DATE) AS YEAR,
+    'Q' || TO_CHAR(d.FULL_DATE, 'Q') AS QUARTER,
+    TO_CHAR(d.FULL_DATE, 'YYYY') || '-Q' || TO_CHAR(d.FULL_DATE, 'Q') AS YEAR_QUARTER,
+    EXTRACT(MONTH FROM d.FULL_DATE) AS MONTH_NUM,
+    TO_CHAR(d.FULL_DATE, 'Month') AS MONTH_NAME,
+    TO_CHAR(d.FULL_DATE, 'Mon YYYY') AS MONTH_YEAR,
+    EXTRACT(DAY FROM d.FULL_DATE) AS DAY_OF_MONTH,
+    TO_NUMBER(TO_CHAR(d.FULL_DATE, 'D')) AS DAY_OF_WEEK,
+    TO_CHAR(d.FULL_DATE, 'Day') AS DAY_NAME,
+    CASE WHEN TO_CHAR(d.FULL_DATE, 'DY', 'NLS_DATE_LANGUAGE=ENGLISH') IN ('SAT', 'SUN') THEN 1 ELSE 0 END AS IS_WEEKEND
+FROM UniqueDates d;
+
+-- B. Populate DIM_PRODUCT
+INSERT INTO DIM_PRODUCT (
+    PRODUCT_KEY, PRODUCT_ID, PRODUCT_NAME, PRODUCT_CATEGORY, PRICE_PER_UNIT, UNIT_COST
+)
+SELECT 
+    ROW_NUMBER() OVER (ORDER BY PRODUCT_ID) AS PRODUCT_KEY,
+    PRODUCT_ID,
+    PRODUCT_NAME,
+    PRODUCT_CATEGORY,
+    PRICE_PER_UNIT,
+    UNIT_COST
+FROM (
+    SELECT DISTINCT 
+        PRODUCT_ID, PRODUCT_NAME, PRODUCT_CATEGORY, PRICE_PER_UNIT, UNIT_COST
+    FROM STG_RETAIL_SALES
+);
+
+-- C. Populate DIM_CUSTOMER
+INSERT INTO DIM_CUSTOMER (
+    CUSTOMER_KEY, CUSTOMER_ID, GENDER, AGE, AGE_GROUP
+)
+SELECT 
+    ROW_NUMBER() OVER (ORDER BY CUSTOMER_ID) AS CUSTOMER_KEY,
+    CUSTOMER_ID,
+    GENDER,
+    AGE,
+    CASE 
+        WHEN AGE < 25 THEN '18-24'
+        WHEN AGE < 35 THEN '25-34'
+        WHEN AGE < 50 THEN '35-49'
+        WHEN AGE < 65 THEN '50-64'
+        ELSE '65+'
+    END AS AGE_GROUP
+FROM (
+    SELECT DISTINCT CUSTOMER_ID, GENDER, AGE
+    FROM STG_RETAIL_SALES
+);
+
+-- D. Populate DIM_REGION
+INSERT INTO DIM_REGION (
+    REGION_KEY, STORE_ID, CITY, STATE, REGION
+)
+SELECT 
+    ROW_NUMBER() OVER (ORDER BY STORE_ID) AS REGION_KEY,
+    STORE_ID,
+    CITY,
+    STATE,
+    REGION
+FROM (
+    SELECT DISTINCT STORE_ID, CITY, STATE, REGION
+    FROM STG_RETAIL_SALES
+);
+
+-- E. Populate FACT_SALES via Key Lookups
+INSERT INTO FACT_SALES (
+    SALES_KEY, TRANSACTION_ID, DATE_KEY, PRODUCT_KEY, CUSTOMER_KEY, REGION_KEY,
+    QUANTITY, PRICE_PER_UNIT, DISCOUNT_PCT, GROSS_SALES, DISCOUNT_AMOUNT,
+    NET_SALES, TOTAL_COST, GROSS_PROFIT, PROFIT_MARGIN_PCT, PAYMENT_METHOD
+)
+SELECT 
+    ROW_NUMBER() OVER (ORDER BY s.TRANSACTION_ID) AS SALES_KEY,
+    s.TRANSACTION_ID,
+    d.DATE_KEY,
+    p.PRODUCT_KEY,
+    c.CUSTOMER_KEY,
+    r.REGION_KEY,
+    s.QUANTITY,
+    s.PRICE_PER_UNIT,
+    s.DISCOUNT_PCT,
+    s.GROSS_SALES,
+    s.DISCOUNT_AMOUNT,
+    s.NET_SALES,
+    s.TOTAL_COST,
+    s.GROSS_PROFIT,
+    s.PROFIT_MARGIN_PCT,
+    s.PAYMENT_METHOD
+FROM STG_RETAIL_SALES s
+JOIN DIM_DATE d ON d.DATE_KEY = s.DATE_KEY
+JOIN DIM_PRODUCT p ON p.PRODUCT_ID = s.PRODUCT_ID
+JOIN DIM_CUSTOMER c ON c.CUSTOMER_ID = s.CUSTOMER_ID
+JOIN DIM_REGION r ON r.STORE_ID = s.STORE_ID;
+
+COMMIT;
+
+-- -----------------------------------------------------------------------------
+-- 5. POST-LOAD AUDIT & RECONCILIATION QUERY
+-- -----------------------------------------------------------------------------
+SELECT 
+    'FACT_SALES' AS ENTITY,
+    COUNT(*) AS TOTAL_LOADED_ROWS,
+    SUM(NET_SALES) AS TOTAL_NET_SALES_USD,
+    SUM(QUANTITY) AS TOTAL_UNITS_SOLD,
+    ROUND(AVG(NET_SALES), 2) AS AVERAGE_ORDER_VALUE
+FROM FACT_SALES;

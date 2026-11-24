@@ -1,0 +1,81 @@
+{
+    "benchmark_row_count": 4927,
+    "total_gross_sales": 1144192.12,
+    "total_net_sales": 1073808.62,
+    "total_profit": 330114.2,
+    "overall_profit_margin_pct": 30.74,
+    "total_units_sold": 11161,
+    "average_order_value": 217.94,
+    "reconciliation_tolerance_pct": 0.1,
+    "dimension_counts": {
+        "dim_date": 731,
+        "dim_product": 35,
+        "dim_customer": 1183,
+        "dim_region": 10,
+        "fact_sales": 4927
+    },
+    "top_10_products": [
+        {
+            "Product_Name": "Smartphone 5G Pro",
+            "Net_Sales": 138518.21
+        },
+        {
+            "Product_Name": "4K Ultra HD Smart TV 55-inch",
+            "Net_Sales": 102222.89
+        },
+        {
+            "Product_Name": "Robot Vacuum Cleaner Smart Mapping",
+            "Net_Sales": 90836.86
+        },
+        {
+            "Product_Name": "Tablet 10-inch 128GB",
+            "Net_Sales": 88717.72
+        },
+        {
+            "Product_Name": "Camping 4-Person Waterproof Tent",
+            "Net_Sales": 69371.49
+        },
+        {
+            "Product_Name": "Smartwatch Fitness Tracker",
+            "Net_Sales": 47647.520000000004
+        },
+        {
+            "Product_Name": "Adjustable Cast Iron Dumbbell Set",
+            "Net_Sales": 45452.08
+        },
+        {
+            "Product_Name": "Programmable Espresso Coffee Maker",
+            "Net_Sales": 42630.12
+        },
+        {
+            "Product_Name": "Waterproof Winter Down Jacket",
+            "Net_Sales": 40992.15
+        },
+        {
+            "Product_Name": "Non-Stick Ceramic Cookware Set 10pc",
+            "Net_Sales": 39230.61
+        }
+    ],
+    "regional_summary": [
+        {
+            "Region": "Central",
+            "Regional_Sales": 197911.25,
+            "Regional_Orders": 987
+        },
+        {
+            "Region": "East",
+            "Regional_Sales": 221729.45,
+            "Regional_Orders": 977
+        },
+        {
+            "Region": "South",
+            "Regional_Sales": 197469.87,
+            "Regional_Orders": 947
+        },
+        {
+            "Region": "West",
+            "Regional_Sales": 456698.05,
+            "Regional_Orders": 2016
+        }
+    ]
+}

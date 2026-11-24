@@ -1,0 +1,36 @@
+Product_Key,Product_ID,Product_Name,Product_Category,Price_Per_Unit,Unit_Cost
+1,PROD-B401,Hydrating Facial Moisturizer Cream,Beauty & Personal Care,28.5,18.53
+2,PROD-B402,Organic Argan Hair Care Shampoo,Beauty & Personal Care,18.99,12.34
+3,PROD-B403,Electric Sonic Toothbrush,Beauty & Personal Care,69.99,45.49
+4,PROD-B404,Vitamin C Radiance Face Serum,Beauty & Personal Care,35.0,22.75
+5,PROD-B405,Mineral Sunscreen SPF 50+,Beauty & Personal Care,22.5,14.62
+6,PROD-C201,Men Slim Fit Denim Jeans,Clothing,59.99,38.99
+7,PROD-C202,Women Classic Cotton Blouse,Clothing,45.0,29.25
+8,PROD-C203,Unisex Hooded Sweatshirt,Clothing,49.99,32.49
+9,PROD-C204,Formal Cotton Dress Shirt,Clothing,39.5,25.68
+10,PROD-C205,Breathable Athletic Running Shorts,Clothing,29.99,19.49
+11,PROD-C206,Merino Wool Knit Sweater,Clothing,79.99,51.99
+12,PROD-C207,Waterproof Winter Down Jacket,Clothing,149.99,97.49
+13,PROD-C208,Casual Graphic T-Shirt,Clothing,24.99,16.24
+14,PROD-E101,Smartphone 5G Pro,Electronics,799.99,519.99
+15,PROD-E102,Wireless Noise-Cancelling Headphones,Electronics,149.99,97.49
+16,PROD-E103,4K Ultra HD Smart TV 55-inch,Electronics,499.99,324.99
+17,PROD-E104,Mechanical Gaming Keyboard,Electronics,89.99,58.49
+18,PROD-E105,Ergonomic Wireless Mouse,Electronics,39.99,25.99
+19,PROD-E106,Smartwatch Fitness Tracker,Electronics,199.99,129.99
+20,PROD-E107,Portable Bluetooth Speaker,Electronics,59.99,38.99
+21,PROD-E108,Tablet 10-inch 128GB,Electronics,329.99,214.49
+22,PROD-E109,USB-C Multiport Dock,Electronics,49.99,32.49
+23,PROD-E110,Noise-Isolating Earbuds,Electronics,29.99,19.49
+24,PROD-H301,Programmable Espresso Coffee Maker,Home & Kitchen,129.99,84.49
+25,PROD-H302,Non-Stick Ceramic Cookware Set 10pc,Home & Kitchen,119.99,77.99
+26,PROD-H303,Stainless Steel High-Speed Blender,Home & Kitchen,79.99,51.99
+27,PROD-H304,Robot Vacuum Cleaner Smart Mapping,Home & Kitchen,299.99,194.99
+28,PROD-H305,Air Fryer Max XL 5.8-Quart,Home & Kitchen,99.99,64.99
+29,PROD-H306,Microfiber Luxury Bed Sheet Set,Home & Kitchen,39.99,25.99
+30,PROD-H307,Electric Kettle 1.7L,Home & Kitchen,34.99,22.74
+31,PROD-S501,Anti-Slip High-Density Yoga Mat,Sports & Outdoors,29.99,19.49
+32,PROD-S502,Adjustable Cast Iron Dumbbell Set,Sports & Outdoors,119.99,77.99
+33,PROD-S503,Insulated Stainless Steel Water Bottle,Sports & Outdoors,19.99,12.99
+34,PROD-S504,Camping 4-Person Waterproof Tent,Sports & Outdoors,159.99,103.99
+35,PROD-S505,Trail Running Hydration Backpack,Sports & Outdoors,54.99,35.74

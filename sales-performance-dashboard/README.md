@@ -1,5 +1,10 @@
 # Sales Performance Dashboard (Retail & E-Commerce)
-**Industry-Grade End-to-End Analytics Engineering & BI Project**
+**Industry-Grade End-to-End Analytics Engineering & BI Capstone Project**
+
+**Student:** Parth Rastogi | **Roll No:** 2500321540118 | **Level:** 2nd-Year B.Tech Student  
+**Institution:** HCLTech Career Shaper | **Project Identifier:** Project No. 1 - Sales Performance Dashboard  
+**Submission Date:** November 2026 | **Submission Folder:** [`submiton/`](submiton/)  
+**GitHub Repository:** [https://github.com/rastogiparth54-bot/2500321540118_ParthRastogi_HCLProject.git](https://github.com/rastogiparth54-bot/2500321540118_ParthRastogi_HCLProject.git)
 
 ![Project Status](https://img.shields.io/badge/Status-Completed-success)
 ![Python](https://img.shields.io/badge/Python-3.10%20%7C%20Pandas-blue)

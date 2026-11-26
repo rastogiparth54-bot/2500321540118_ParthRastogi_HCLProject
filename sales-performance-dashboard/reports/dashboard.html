@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+</head>
+<body class="bg-transparent text-[var(--foreground)] antialiased p-0 m-0 text-xs">
+  <div class="p-3 space-y-3 font-sans">
+    
+    <!-- Top KPI Bar -->
+    <div class="grid grid-cols-5 gap-2 pb-2 border-b border-[var(--card-border)]">
+      <div class="p-2 rounded bg-[var(--card)] border border-[var(--card-border)] text-center">
+        <div class="text-[10px] text-[var(--muted-foreground)] uppercase tracking-wide font-semibold">Net Sales</div>
+        <div class="text-sm font-bold text-[var(--primary)]">$1,073,809</div>
+        <div class="text-[9px] text-[var(--success)] font-medium">▲ +19.4% peak</div>
+      </div>
+      <div class="p-2 rounded bg-[var(--card)] border border-[var(--card-border)] text-center">
+        <div class="text-[10px] text-[var(--muted-foreground)] uppercase tracking-wide font-semibold">Orders</div>
+        <div class="text-sm font-bold">4,927</div>
+        <div class="text-[9px] text-[var(--muted-foreground)]">205 / month</div>
+      </div>
+      <div class="p-2 rounded bg-[var(--card)] border border-[var(--card-border)] text-center">
+        <div class="text-[10px] text-[var(--muted-foreground)] uppercase tracking-wide font-semibold">Units Sold</div>
+        <div class="text-sm font-bold">11,161</div>
+        <div class="text-[9px] text-[var(--muted-foreground)]">2.27 / basket</div>
+      </div>
+      <div class="p-2 rounded bg-[var(--card)] border border-[var(--card-border)] text-center">
+        <div class="text-[10px] text-[var(--muted-foreground)] uppercase tracking-wide font-semibold">Avg Order (AOV)</div>
+        <div class="text-sm font-bold text-amber-500">$217.94</div>
+        <div class="text-[9px] text-[var(--muted-foreground)]">Disc: 6.15%</div>
+      </div>
+      <div class="p-2 rounded bg-[var(--card)] border border-[var(--card-border)] text-center">
+        <div class="text-[10px] text-[var(--muted-foreground)] uppercase tracking-wide font-semibold">Profit Margin</div>
+        <div class="text-sm font-bold text-[var(--success)]">30.74%</div>
+        <div class="text-[9px] text-[var(--muted-foreground)]">$330.1k profit</div>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="flex items-center justify-between gap-2 text-xs">
+      <div class="flex gap-1.5 bg-[var(--card)] p-1 rounded-md border border-[var(--card-border)]">
+        <button id="btn-trend" onclick="showTab('trend')" class="px-2.5 py-1 rounded font-medium bg-[var(--primary)] text-[var(--primary-foreground)] transition">Monthly Trend</button>
+        <button id="btn-top10" onclick="showTab('top10')" class="px-2.5 py-1 rounded font-medium text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition">Top 10 Products</button>
+        <button id="btn-region" onclick="showTab('region')" class="px-2.5 py-1 rounded font-medium text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition">Regional Share</button>
+        <button id="btn-category" onclick="showTab('category')" class="px-2.5 py-1 rounded font-medium text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition">Categories</button>
+      </div>
+      <span id="tab-subtitle" class="text-[11px] text-[var(--muted-foreground)] font-mono">24-Month Sales Revenue & Moving Avg</span>
+    </div>
+
+    <!-- Visual Chart Panels (Target under 320px) -->
+    <div class="bg-[var(--card)] p-3 rounded-lg border border-[var(--card-border)] relative">
+      
+      <!-- Panel 1: Monthly Trend SVG Chart -->
+      <div id="panel-trend" class="space-y-2">
+        <svg viewBox="0 0 600 190" class="w-full h-44 overflow-visible">
+          <!-- Grid lines -->
+          <line x1="45" y1="20" x2="580" y2="20" stroke="var(--border)" stroke-dasharray="3 3" opacity="0.4" />
+          <line x1="45" y1="60" x2="580" y2="60" stroke="var(--border)" stroke-dasharray="3 3" opacity="0.4" />
+          <line x1="45" y1="100" x2="580" y2="100" stroke="var(--border)" stroke-dasharray="3 3" opacity="0.4" />
+          <line x1="45" y1="140" x2="580" y2="140" stroke="var(--border)" opacity="0.6" />
+
+          <!-- Y Axis Labels -->
+          <text x="40" y="24" fill="var(--muted-foreground)" font-size="8" text-anchor="end">$60k</text>
+          <text x="40" y="64" fill="var(--muted-foreground)" font-size="8" text-anchor="end">$45k</text>
+          <text x="40" y="104" fill="var(--muted-foreground)" font-size="8" text-anchor="end">$30k</text>
+          <text x="40" y="144" fill="var(--muted-foreground)" font-size="8" text-anchor="end">$15k</text>
+
+          <!-- Bars (24 months) -->
+          <!-- 2023 -->
+          <rect x="52" y="72" width="14" height="68" fill="#3B82F6" rx="2" opacity="0.75"><title>Jan 2023: $41,200</title></rect>
+          <rect x="73" y="75" width="14" height="65" fill="#3B82F6" rx="2" opacity="0.75"><title>Feb 2023: $39,800</title></rect>
+          <rect x="94" y="68" width="14" height="72" fill="#3B82F6" rx="2" opacity="0.75"><title>Mar 2023: $42,500</title></rect>
+          <rect x="115" y="70" width="14" height="70" fill="#3B82F6" rx="2" opacity="0.75"><title>Apr 2023: $41,900</title></rect>
+          <rect x="136" y="62" width="14" height="78" fill="#3B82F6" rx="2" opacity="0.75"><title>May 2023: $44,800</title></rect>
+          <rect x="157" y="65" width="14" height="75" fill="#3B82F6" rx="2" opacity="0.75"><title>Jun 2023: $43,700</title></rect>
+          <rect x="178" y="58" width="14" height="82" fill="#3B82F6" rx="2" opacity="0.75"><title>Jul 2023: $46,200</title></rect>
+          <rect x="199" y="60" width="14" height="80" fill="#3B82F6" rx="2" opacity="0.75"><title>Aug 2023: $45,500</title></rect>
+          <rect x="220" y="64" width="14" height="76" fill="#3B82F6" rx="2" opacity="0.75"><title>Sep 2023: $44,100</title></rect>
+          <rect x="241" y="50" width="14" height="90" fill="#3B82F6" rx="2" opacity="0.75"><title>Oct 2023: $49,300</title></rect>
+          <rect x="262" y="38" width="14" height="102" fill="#2563EB" rx="2"><title>Nov 2023: $53,400 (Holiday Surge)</title></rect>
+          <rect x="283" y="34" width="14" height="106" fill="#1D4ED8" rx="2"><title>Dec 2023: $54,900 (Holiday Peak)</title></rect>
+
+          <!-- 2024 -->
+          <rect x="309" y="70" width="14" height="70" fill="#3B82F6" rx="2" opacity="0.75"><title>Jan 2024: $42,100</title></rect>
+          <rect x="330" y="74" width="14" height="66" fill="#3B82F6" rx="2" opacity="0.75"><title>Feb 2024: $40,500</title></rect>
+          <rect x="351" y="65" width="14" height="75" fill="#3B82F6" rx="2" opacity="0.75"><title>Mar 2024: $43,800</title></rect>
+          <rect x="372" y="62" width="14" height="78" fill="#3B82F6" rx="2" opacity="0.75"><title>Apr 2024: $44,900</title></rect>
+          <rect x="393" y="56" width="14" height="84" fill="#3B82F6" rx="2" opacity="0.75"><title>May 2024: $47,100</title></rect>
+          <rect x="414" y="59" width="14" height="81" fill="#3B82F6" rx="2" opacity="0.75"><title>Jun 2024: $46,000</title></rect>
+          <rect x="435" y="52" width="14" height="88" fill="#3B82F6" rx="2" opacity="0.75"><title>Jul 2024: $48,600</title></rect>
+          <rect x="456" y="55" width="14" height="85" fill="#3B82F6" rx="2" opacity="0.75"><title>Aug 2024: $47,400</title></rect>
+          <rect x="477" y="58" width="14" height="82" fill="#3B82F6" rx="2" opacity="0.75"><title>Sep 2024: $46,300</title></rect>
+          <rect x="498" y="44" width="14" height="96" fill="#3B82F6" rx="2" opacity="0.75"><title>Oct 2024: $51,500</title></rect>
+          <rect x="519" y="32" width="14" height="108" fill="#2563EB" rx="2"><title>Nov 2024: $55,800</title></rect>
+          <rect x="540" y="26" width="14" height="114" fill="#1D4ED8" rx="2"><title>Dec 2024: $58,200 (Record Peak)</title></rect>
+
+          <!-- 3M Trendline Polyline -->
+          <polyline points="59,72 80,73 101,70 122,69 143,65 164,64 185,60 206,60 227,62 248,55 269,45 290,38 316,55 337,68 358,66 379,64 400,58 421,57 442,53 463,54 484,55 505,48 526,38 547,28"
+                    fill="none" stroke="#F43F5E" stroke-width="2.5" stroke-linecap="round" />
+
+          <!-- Peak annotation badge -->
+          <rect x="480" y="8" width="95" height="16" rx="3" fill="#FEF3C7" stroke="#F59E0B" stroke-width="0.7" />
+          <text x="527" y="19" fill="#92400E" font-size="7.5" font-weight="bold" text-anchor="middle">Dec Peak: $58.2k</text>
+
+          <!-- X axis month markers -->
+          <text x="59" y="156" fill="var(--muted-foreground)" font-size="7" text-anchor="middle">Jan '23</text>
+          <text x="164" y="156" fill="var(--muted-foreground)" font-size="7" text-anchor="middle">Jun '23</text>
+          <text x="290" y="156" fill="var(--muted-foreground)" font-size="7" text-anchor="middle">Dec '23</text>
+          <text x="316" y="156" fill="var(--muted-foreground)" font-size="7" text-anchor="middle">Jan '24</text>
+          <text x="421" y="156" fill="var(--muted-foreground)" font-size="7" text-anchor="middle">Jun '24</text>
+          <text x="547" y="156" fill="var(--muted-foreground)" font-size="7" text-anchor="middle">Dec '24</text>
+        </svg>
+        <div class="flex items-center justify-center gap-6 pt-1 text-[10px] text-[var(--muted-foreground)]">
+          <div class="flex items-center gap-1.5"><span class="w-3 h-2 bg-[#3B82F6] rounded-xs inline-block"></span> Net Monthly Sales</div>
+          <div class="flex items-center gap-1.5"><span class="w-3 h-0.5 bg-[#F43F5E] inline-block"></span> 3-Month Moving Average</div>
+          <div class="flex items-center gap-1.5"><span class="w-3 h-2 bg-[#1D4ED8] rounded-xs inline-block"></span> Q4 Surge Months</div>
+        </div>
+      </div>
+
+      <!-- Panel 2: Top 10 Products -->
+      <div id="panel-top10" class="hidden space-y-1.5">
+        <div class="space-y-1">
+          <!-- 1 -->
+          <div class="flex items-center gap-2">
+            <span class="w-4 text-[10px] font-bold text-[var(--primary)] text-right">#1</span>
+            <span class="w-36 truncate text-[11px] font-medium">Smartphone 5G Pro</span>
+            <div class="flex-1 bg-[var(--border)] h-3 rounded overflow-hidden">
+              <div class="bg-[var(--primary)] h-full rounded" style="width: 100%;"></div>
+            </div>
+            <span class="w-16 text-[10px] font-bold text-right tabular-nums">$138,518</span>
+          </div>
+          <!-- 2 -->
+          <div class="flex items-center gap-2">
+            <span class="w-4 text-[10px] font-bold text-[var(--primary)] text-right">#2</span>
+            <span class="w-36 truncate text-[11px] font-medium">4K Ultra HD Smart TV 55"</span>
+            <div class="flex-1 bg-[var(--border)] h-3 rounded overflow-hidden">
+              <div class="bg-blue-600 h-full rounded" style="width: 73.8%;"></div>
+            </div>
+            <span class="w-16 text-[10px] font-bold text-right tabular-nums">$102,223</span>
+          </div>
+          <!-- 3 -->
+          <div class="flex items-center gap-2">
+            <span class="w-4 text-[10px] font-bold text-[var(--primary)] text-right">#3</span>
+            <span class="w-36 truncate text-[11px] font-medium">Robot Vacuum Cleaner</span>
+            <div class="flex-1 bg-[var(--border)] h-3 rounded overflow-hidden">
+              <div class="bg-blue-500 h-full rounded" style="width: 65.6%;"></div>
+            </div>
+            <span class="w-16 text-[10px] font-bold text-right tabular-nums">$90,837</span>
+          </div>
+          <!-- 4 -->
+          <div class="flex items-center gap-2">
+            <span class="w-4 text-[10px] font-bold text-[var(--primary)] text-right">#4</span>
+            <span class="w-36 truncate text-[11px] font-medium">Tablet 10-inch 128GB</span>
+            <div class="flex-1 bg-[var(--border)] h-3 rounded overflow-hidden">
+              <div class="bg-blue-500 h-full rounded" style="width: 64.0%;"></div>
+            </div>
+            <span class="w-16 text-[10px] font-bold text-right tabular-nums">$88,718</span>
+          </div>
+          <!-- 5 -->
+          <div class="flex items-center gap-2">
+            <span class="w-4 text-[10px] font-bold text-[var(--primary)] text-right">#5</span>
+            <span class="w-36 truncate text-[11px] font-medium">Camping 4-Person Tent</span>
+            <div class="flex-1 bg-[var(--border)] h-3 rounded overflow-hidden">
+              <div class="bg-blue-400 h-full rounded" style="width: 50.1%;"></div>
+            </div>
+            <span class="w-16 text-[10px] font-bold text-right tabular-nums">$69,371</span>
+          </div>
+          <!-- 6 -->
+          <div class="flex items-center gap-2">
+            <span class="w-4 text-[10px] font-bold text-[var(--muted-foreground)] text-right">#6</span>
+            <span class="w-36 truncate text-[11px]">Smartwatch Fitness Tracker</span>
+            <div class="flex-1 bg-[var(--border)] h-3 rounded overflow-hidden">
+              <div class="bg-blue-400 h-full rounded" style="width: 34.4%;"></div>
+            </div>
+            <span class="w-16 text-[10px] text-right tabular-nums text-[var(--muted-foreground)]">$47,648</span>
+          </div>
+          <!-- 7 -->
+          <div class="flex items-center gap-2">
+            <span class="w-4 text-[10px] font-bold text-[var(--muted-foreground)] text-right">#7</span>
+            <span class="w-36 truncate text-[11px]">Adjustable Dumbbell Set</span>
+            <div class="flex-1 bg-[var(--border)] h-3 rounded overflow-hidden">
+              <div class="bg-blue-400 h-full rounded" style="width: 32.8%;"></div>
+            </div>
+            <span class="w-16 text-[10px] text-right tabular-nums text-[var(--muted-foreground)]">$45,452</span>
+          </div>
+          <!-- 8 -->
+          <div class="flex items-center gap-2">
+            <span class="w-4 text-[10px] font-bold text-[var(--muted-foreground)] text-right">#8</span>
+            <span class="w-36 truncate text-[11px]">Espresso Coffee Maker</span>
+            <div class="flex-1 bg-[var(--border)] h-3 rounded overflow-hidden">
+              <div class="bg-blue-400 h-full rounded" style="width: 30.8%;"></div>
+            </div>
+            <span class="w-16 text-[10px] text-right tabular-nums text-[var(--muted-foreground)]">$42,630</span>
+          </div>
+          <!-- 9 -->
+          <div class="flex items-center gap-2">
+            <span class="w-4 text-[10px] font-bold text-[var(--muted-foreground)] text-right">#9</span>
+            <span class="w-36 truncate text-[11px]">Winter Down Jacket</span>
+            <div class="flex-1 bg-[var(--border)] h-3 rounded overflow-hidden">
+              <div class="bg-blue-300 h-full rounded" style="width: 29.6%;"></div>
+            </div>
+            <span class="w-16 text-[10px] text-right tabular-nums text-[var(--muted-foreground)]">$40,992</span>
+          </div>
+          <!-- 10 -->
+          <div class="flex items-center gap-2">
+            <span class="w-4 text-[10px] font-bold text-[var(--muted-foreground)] text-right">#10</span>
+            <span class="w-36 truncate text-[11px]">Ceramic Cookware 10pc</span>
+            <div class="flex-1 bg-[var(--border)] h-3 rounded overflow-hidden">
+              <div class="bg-blue-300 h-full rounded" style="width: 28.3%;"></div>
+            </div>
+            <span class="w-16 text-[10px] text-right tabular-nums text-[var(--muted-foreground)]">$39,231</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel 3: Regional Share -->
+      <div id="panel-region" class="hidden">
+        <div class="grid grid-cols-2 gap-4 items-center">
+          <!-- Donut SVG -->
+          <div class="flex justify-center">
+            <svg viewBox="0 0 160 160" class="w-36 h-36">
+              <!-- West: 40.4% -->
+              <circle cx="80" cy="80" r="54" fill="transparent" stroke="#1E40AF" stroke-width="24"
+                      stroke-dasharray="137 202" stroke-dashoffset="0" />
+              <!-- Central: 20.2% -->
+              <circle cx="80" cy="80" r="54" fill="transparent" stroke="#3B82F6" stroke-width="24"
+                      stroke-dasharray="68.5 270.5" stroke-dashoffset="-137" />
+              <!-- East: 19.7% -->
+              <circle cx="80" cy="80" r="54" fill="transparent" stroke="#10B981" stroke-width="24"
+                      stroke-dasharray="67 272" stroke-dashoffset="-205.5" />
+              <!-- South: 19.7% -->
+              <circle cx="80" cy="80" r="54" fill="transparent" stroke="#F59E0B" stroke-width="24"
+                      stroke-dasharray="67 272" stroke-dashoffset="-272.5" />
+              <text x="80" y="77" fill="var(--foreground)" font-size="11" font-weight="bold" text-anchor="middle">4 Regions</text>
+              <text x="80" y="90" fill="var(--muted-foreground)" font-size="8" text-anchor="middle">10 Stores</text>
+            </svg>
+          </div>
+          <!-- Regional breakdown list -->
+          <div class="space-y-2 text-[11px]">
+            <div class="p-1.5 rounded bg-[var(--card)] border border-[var(--card-border)] flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-[#1E40AF]"></span>
+                <span class="font-semibold">West (LA, SF, Seattle, Denver)</span>
+              </div>
+              <span class="font-mono font-bold">$433.5k (40.4%)</span>
+            </div>
+            <div class="p-1.5 rounded bg-[var(--card)] border border-[var(--card-border)] flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-[#3B82F6]"></span>
+                <span class="font-semibold">Central (Chicago, Dallas)</span>
+              </div>
+              <span class="font-mono font-bold">$217.3k (20.2%)</span>
+            </div>
+            <div class="p-1.5 rounded bg-[var(--card)] border border-[var(--card-border)] flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-[#10B981]"></span>
+                <span class="font-semibold">East (NY, Boston)</span>
+              </div>
+              <span class="font-mono font-bold">$211.8k (19.7%)</span>
+            </div>
+            <div class="p-1.5 rounded bg-[var(--card)] border border-[var(--card-border)] flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-[#F59E0B]"></span>
+                <span class="font-semibold">South (Atlanta, Miami)</span>
+              </div>
+              <span class="font-mono font-bold">$211.2k (19.7%)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel 4: Categories -->
+      <div id="panel-category" class="hidden space-y-2">
+        <div class="space-y-2 text-[11px]">
+          <div class="flex items-center justify-between gap-2 p-1.5 rounded border border-[var(--card-border)]">
+            <span class="font-semibold w-36">Electronics</span>
+            <div class="flex-1 bg-[var(--border)] h-2.5 rounded overflow-hidden">
+              <div class="bg-[var(--primary)] h-full" style="width: 100%;"></div>
+            </div>
+            <span class="font-mono text-xs font-bold w-16 text-right">$377.1k</span>
+            <span class="text-[10px] font-bold text-[var(--success)] w-14 text-right">30.1% margin</span>
+          </div>
+          <div class="flex items-center justify-between gap-2 p-1.5 rounded border border-[var(--card-border)]">
+            <span class="font-semibold w-36">Home & Kitchen</span>
+            <div class="flex-1 bg-[var(--border)] h-2.5 rounded overflow-hidden">
+              <div class="bg-blue-600 h-full" style="width: 61.3%;"></div>
+            </div>
+            <span class="font-mono text-xs font-bold w-16 text-right">$231.2k</span>
+            <span class="text-[10px] font-bold text-[var(--success)] w-14 text-right">31.2% margin</span>
+          </div>
+          <div class="flex items-center justify-between gap-2 p-1.5 rounded border border-[var(--card-border)]">
+            <span class="font-semibold w-36">Sports & Outdoors</span>
+            <div class="flex-1 bg-[var(--border)] h-2.5 rounded overflow-hidden">
+              <div class="bg-blue-500 h-full" style="width: 48.6%;"></div>
+            </div>
+            <span class="font-mono text-xs font-bold w-16 text-right">$183.3k</span>
+            <span class="text-[10px] font-bold text-[var(--success)] w-14 text-right">31.6% margin</span>
+          </div>
+          <div class="flex items-center justify-between gap-2 p-1.5 rounded border border-[var(--card-border)]">
+            <span class="font-semibold w-36">Clothing</span>
+            <div class="flex-1 bg-[var(--border)] h-2.5 rounded overflow-hidden">
+              <div class="bg-blue-400 h-full" style="width: 47.9%;"></div>
+            </div>
+            <span class="font-mono text-xs font-bold w-16 text-right">$180.7k</span>
+            <span class="text-[10px] font-bold text-[var(--success)] w-14 text-right">31.4% margin</span>
+          </div>
+          <div class="flex items-center justify-between gap-2 p-1.5 rounded border border-[var(--card-border)]">
+            <span class="font-semibold w-36">Beauty & Care</span>
+            <div class="flex-1 bg-[var(--border)] h-2.5 rounded overflow-hidden">
+              <div class="bg-blue-300 h-full" style="width: 26.9%;"></div>
+            </div>
+            <span class="font-mono text-xs font-bold w-16 text-right">$101.5k</span>
+            <span class="text-[10px] font-bold text-[var(--success)] w-14 text-right">30.8% margin</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    function showTab(tab) {
+      const tabs = ['trend', 'top10', 'region', 'category'];
+      const subtitles = {
+        'trend': '24-Month Sales Revenue & Moving Avg',
+        'top10': 'Top 10 Products by Net Revenue ($)',
+        'region': 'Regional Share & Physical Store Breakdown',
+        'category': 'Sales Revenue & Profit Margin by Category'
+      };
+
+      tabs.forEach(t => {
+        const btn = document.getElementById('btn-' + t);
+        const panel = document.getElementById('panel-' + t);
+        if (t === tab) {
+          btn.className = 'px-2.5 py-1 rounded font-medium bg-[var(--primary)] text-[var(--primary-foreground)] transition';
+          panel.classList.remove('hidden');
+        } else {
+          btn.className = 'px-2.5 py-1 rounded font-medium text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition';
+          panel.classList.add('hidden');
+        }
+      });
+      document.getElementById('tab-subtitle').textContent = subtitles[tab];
+    }
+  </script>
+</body>
+</html>
